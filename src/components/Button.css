@@ -4,9 +4,27 @@
 }
 
 .button {
+    font-size: 0.9em;
     background-color: var(--bg-button);
     border-radius: 50%;
     margin: 4%;
     border: none;
     color: var(--char-color);
+}
+
+.button:active {
+    background-color: #8d8d8d;
+    font-size: 0.7em;
+}
+
+.button.operation {
+    color: #6dd03b;
+}
+
+.button.clear {
+    color: #fb6c64;
+}
+
+.button.equal {
+    background-color: #03d100;
 }
