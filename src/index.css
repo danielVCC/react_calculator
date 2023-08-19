@@ -1,10 +1,10 @@
 @font-face {
-  font-family: 'RobotoMono';
-  src: url('./fonts/RobotoMono-Thin.ttf');
+  font-family: 'Roboto Condensed', sans-serif;
+  src: url('./fonts/RobotoCondensed-Regular.ttf');
 }
 
 * {
-  font-family: 'RobotoMono', monospace;
+  font-family: 'Roboto Condensed', sans-serif;
 }
 
 body {

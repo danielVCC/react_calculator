@@ -2,5 +2,8 @@
     height: 320px;
     width: 235px;
     overflow: hidden;
-    background-color: green;
+    background-color: black;
+
+    display: grid;
+    grid-template-columns: repeat(4, 25%);
 }
