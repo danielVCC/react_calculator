@@ -28,3 +28,7 @@
 .button.equal {
     background-color: #03d100;
 }
+
+.button.equal:active {
+    background-color: #64ff62;
+}
