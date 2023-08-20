@@ -16,14 +16,19 @@ export default class Calculator extends Component {
         this.setState({ displayValue, resultDisplayValue });
     }
 
-    setOperation(operation) {
-        console.log(operation);
+    equal() {
+        if(this.state.resultDisplayValue === ""){
+            return
+        }
+        const displayValue = this.state.resultDisplayValue;
+        const resultDisplayValue = "";
+        this.setState({ displayValue, resultDisplayValue})
     }
 
     evaluateExpression(expression) {
         expression = expression.replace(/x/g, '*')
         try {
-            return eval(expression);
+            return String(eval(expression));
           } catch (error) {
             return ""; // Retorna uma string vazia em caso de erro
           }
@@ -46,7 +51,7 @@ export default class Calculator extends Component {
 
     addDigit(n) {
         // um numero não pode começar com operadores
-        if(this.isOperator(n) && this.getLastNumber(this.state.displayValue).length == 0)
+        if(this.isOperator(n) && this.getLastNumber(this.state.displayValue).length === 0)
             return
         // um numero so pode ter um .
         if(n === "." && this.getLastNumber(this.state.displayValue).includes(".")) 
@@ -63,8 +68,8 @@ export default class Calculator extends Component {
     }
 
     render() {
-        const setOperation = operation => this.setOperation(operation)
         const addDigit = n => this.addDigit(n)
+
         return (
             <div className="calculator">
                 <Display value={this.state.displayValue} resultValue={this.state.resultDisplayValue}/>
@@ -87,7 +92,7 @@ export default class Calculator extends Component {
                 <Button label="+/-" />
                 <Button label="0" click={addDigit}/>
                 <Button label="." click={addDigit}/>
-                <Button label="=" click={setOperation} equal/>
+                <Button label="=" click={() => this.equal()} equal/>
             </div>
         )
     }
