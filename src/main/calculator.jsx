@@ -3,10 +3,6 @@ import './Calculator.css';
 import Button from "../components/Button";
 import Display from "../components/Display";
 
-// const displayValue = {
-//     displayValue: ''
-// }
-
 export default class Calculator extends Component {
 
     state = {
@@ -15,12 +11,13 @@ export default class Calculator extends Component {
     }
 
     clear() {
-        const displayValue = ""
-        this.setState({ displayValue })
+        const displayValue = "";
+        const resultDisplayValue = "";
+        this.setState({ displayValue, resultDisplayValue });
     }
 
     setOperation(operation) {
-        console.log(operation)
+        console.log(operation);
     }
 
     evaluateExpression(expression) {
@@ -58,11 +55,11 @@ export default class Calculator extends Component {
         if(n === "0" && this.getLastNumber(this.state.displayValue) === "0")
             return
         // add digit
-        const displayValue = this.state.displayValue + n
-        var resultDisplayValue = ""
+        const displayValue = this.state.displayValue + n;
+        var resultDisplayValue = "";
         if(this.containsOperator(displayValue))
-            resultDisplayValue = this.evaluateExpression(displayValue)
-        this.setState({ displayValue, resultDisplayValue })
+            resultDisplayValue = this.evaluateExpression(displayValue);
+        this.setState({ displayValue, resultDisplayValue });
     }
 
     render() {
