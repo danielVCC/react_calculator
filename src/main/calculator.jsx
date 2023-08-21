@@ -3,23 +3,23 @@ import './Calculator.css';
 import Button from "../components/Button";
 import Display from "../components/Display";
 
+const initialState = {
+    displayValue: "",
+    resultDisplayValue: "",
+    displayOpenParentheses: 0
+}
+
 export default class Calculator extends Component {
 
-    state = {
-        displayValue: "",
-        resultDisplayValue: ""
-    }
+    state = { ...initialState }
 
     clear() {
-        const displayValue = "";
-        const resultDisplayValue = "";
-        this.setState({ displayValue, resultDisplayValue });
+        this.setState({ ...initialState });
     }
 
     equal() {
-        if(this.state.resultDisplayValue === ""){
+        if(this.state.resultDisplayValue === "")
             return
-        }
         const displayValue = this.state.resultDisplayValue;
         const resultDisplayValue = "";
         this.setState({ displayValue, resultDisplayValue})
@@ -27,10 +27,13 @@ export default class Calculator extends Component {
 
     evaluateExpression(expression) {
         expression = expression.replace(/x/g, '*')
+        // caso o usuario nao tenha fechado ainda os parenteses, feche automaticamente eles para fazer a evaluacao
+        for (let i = this.state.displayOpenParentheses; i != 0; i--)
+            expression += ')';
         try {
             return String(eval(expression));
           } catch (error) {
-            return ""; // Retorna uma string vazia em caso de erro
+            return ""; // erro signfica que a expressao nao esta com sintaxe correta, logo nao precisa de resultado
           }
     }
 
@@ -40,13 +43,35 @@ export default class Calculator extends Component {
     }
 
     isOperator(char) {
-        const operators = new Set(['+', '-', '*', '/']);
+        const operators = new Set(['+', '-', '*', '/', 'x']);
         return operators.has(char);
     }
 
     containsOperator(inputString) {
         const operatorPattern = /[+\-x/]/;
         return operatorPattern.test(inputString);
+    }
+
+    addParentheses() {
+        const lastCharOnDisplay = this.state.displayValue.charAt(this.state.displayValue.length - 1);
+        var displayValue = this.state.displayValue;
+        var displayOpenParentheses = this.state.displayOpenParentheses;
+        // se o ultimo caracter for um operador, ou o display esteja vazio, abre parentese sempre
+        if (this.isOperator(lastCharOnDisplay) || displayValue.length === 0) {
+            displayValue += '(';
+            displayOpenParentheses++;
+            return this.setState({ displayValue, displayOpenParentheses })
+        }
+        // se o ultimo digito nao e um operador, feche o parentese caso tenha algum aberto
+        if(this.state.displayOpenParentheses > 0) {
+            displayValue += ")";
+            displayOpenParentheses--;
+            return this.setState({ displayValue, displayOpenParentheses })
+        }
+        // se nao houver parentese pra fechar, adicione uma multiplicacao seguida da abertura do parentese
+        displayValue += "x(";
+        displayOpenParentheses++;
+        return this.setState({ displayValue, displayOpenParentheses })
     }
 
     addDigit(n) {
@@ -69,12 +94,15 @@ export default class Calculator extends Component {
 
     render() {
         const addDigit = n => this.addDigit(n)
+        const addParentheses = () => this.addParentheses()
+        const clear = () => this.clear()
+        const equal = () => this.equal()
 
         return (
             <div className="calculator">
                 <Display value={this.state.displayValue} resultValue={this.state.resultDisplayValue}/>
-                <Button label="C" click={() => this.clear()} clear/>
-                <Button label="()" operation/>
+                <Button label="C" click={clear} clear/>
+                <Button label="()" click={addParentheses} operation/>
                 <Button label="%" click={addDigit} operation/>
                 <Button label="/" click={addDigit} operation/>
                 <Button label="7" click={addDigit}/>
@@ -92,7 +120,7 @@ export default class Calculator extends Component {
                 <Button label="+/-" />
                 <Button label="0" click={addDigit}/>
                 <Button label="." click={addDigit}/>
-                <Button label="=" click={() => this.equal()} equal/>
+                <Button label="=" click={equal} equal/>
             </div>
         )
     }
