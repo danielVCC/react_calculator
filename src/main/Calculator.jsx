@@ -19,16 +19,22 @@ export default class Calculator extends Component {
 
     equal() {
         if(this.state.resultDisplayValue === "")
-            return
+            return;
         const displayValue = this.state.resultDisplayValue;
         const resultDisplayValue = "";
-        this.setState({ displayValue, resultDisplayValue})
+        this.setState({ displayValue, resultDisplayValue});
     }
 
     evaluateExpression(expression) {
-        expression = expression.replace(/x/g, '*')
+        // x === * % === /100 para evaluacao
+        expression = expression.replace(/[x%]/g, function(match) {
+            if (match === 'x')
+                return '*';
+            else if (match === '%') 
+                return '/100';
+          });
         // caso o usuario nao tenha fechado ainda os parenteses, feche automaticamente eles para fazer a evaluacao
-        for (let i = this.state.displayOpenParentheses; i != 0; i--)
+        for (let i = this.state.displayOpenParentheses; i !== 0; i--)
             expression += ')';
         try {
             return String(eval(expression));
@@ -37,7 +43,12 @@ export default class Calculator extends Component {
           }
     }
 
-    getLastNumber(expression) {
+    getLastCharOnDisplay(){
+        return this.state.displayValue.charAt(this.state.displayValue.length - 1);
+    }
+
+    getLastNumber() {
+        const expression = this.state.displayValue
         const result = expression.split(/[-+x/]/).reduce((accumulator, currentValue) => currentValue, "");
         return result;
     }
@@ -52,15 +63,22 @@ export default class Calculator extends Component {
         return operatorPattern.test(inputString);
     }
 
+    addPercentage() {
+        if(this.getLastNumber().length === 0 || this.getLastCharOnDisplay() === '(' || this.getLastCharOnDisplay() === '%') 
+            return;
+        const displayValue = this.state.displayValue + '%';
+        const resultDisplayValue = this.evaluateExpression(displayValue);
+        this.setState({ displayValue, resultDisplayValue });
+    }
+
     addParentheses() {
-        const lastCharOnDisplay = this.state.displayValue.charAt(this.state.displayValue.length - 1);
         var displayValue = this.state.displayValue;
         var displayOpenParentheses = this.state.displayOpenParentheses;
         // se o ultimo caracter for um operador, ou o display esteja vazio, abre parentese sempre
-        if (this.isOperator(lastCharOnDisplay) || displayValue.length === 0) {
+        if (this.isOperator(this.getLastCharOnDisplay) || displayValue.length === 0) {
             displayValue += '(';
             displayOpenParentheses++;
-            return this.setState({ displayValue, displayOpenParentheses })
+            return this.setState({ displayValue, displayOpenParentheses });
         }
         // se o ultimo digito nao e um operador, feche o parentese caso tenha algum aberto
         if(this.state.displayOpenParentheses > 0) {
@@ -68,22 +86,37 @@ export default class Calculator extends Component {
             displayOpenParentheses--;
             return this.setState({ displayValue, displayOpenParentheses })
         }
-        // se nao houver parentese pra fechar, adicione uma multiplicacao seguida da abertura do parentese
+        // se nao houver parentese pra fechar, adiciona automaticamente uma multiplicação e abre parentese
         displayValue += "x(";
         displayOpenParentheses++;
-        return this.setState({ displayValue, displayOpenParentheses })
+        this.setState({ displayValue, displayOpenParentheses });
+    }
+
+    addOperator(n) {
+        if(this.getLastNumber().length === 0)
+            return;
+        if((n === "x" || n === "/") && this.getLastCharOnDisplay() === "(")
+            return;
+        const displayValue = this.state.displayValue + n;
+        const resultDisplayValue = "";
+        this.setState({ displayValue, resultDisplayValue });
     }
 
     addDigit(n) {
-        // um numero não pode começar com operadores
-        if(this.isOperator(n) && this.getLastNumber(this.state.displayValue).length === 0)
-            return
         // um numero so pode ter um .
-        if(n === "." && this.getLastNumber(this.state.displayValue).includes(".")) 
-            return
+        if(n === "."){
+            if(this.getLastNumber().includes("."))
+                return;
+            if(this.getLastNumber().length === 0)
+                n = "0.";
+        }
         // um numero nao pode iniciar com uma sequencia de zeros
-        if(n === "0" && this.getLastNumber(this.state.displayValue) === "0")
-            return
+        if(n === "0" && this.getLastNumber() === "0")
+            return;
+        // insere automaticamente uma multiplicao se um digito for colocado apos ) ou %
+        if(this.getLastCharOnDisplay() === ")" || this.getLastCharOnDisplay() === "%")
+            n = "x" + n;
+
         // add digit
         const displayValue = this.state.displayValue + n;
         var resultDisplayValue = "";
@@ -93,30 +126,32 @@ export default class Calculator extends Component {
     }
 
     render() {
-        const addDigit = n => this.addDigit(n)
-        const addParentheses = () => this.addParentheses()
-        const clear = () => this.clear()
-        const equal = () => this.equal()
+        const addDigit = n => this.addDigit(n);
+        const addOperator = n => this.addOperator(n);
+        const addParentheses = () => this.addParentheses();
+        const addPercentage = () => this.addPercentage();
+        const clear = () => this.clear();
+        const equal = () => this.equal();
 
         return (
             <div className="calculator">
                 <Display value={this.state.displayValue} resultValue={this.state.resultDisplayValue}/>
                 <Button label="C" click={clear} clear/>
                 <Button label="()" click={addParentheses} operation/>
-                <Button label="%" click={addDigit} operation/>
-                <Button label="/" click={addDigit} operation/>
+                <Button label="%" click={addPercentage} operation/>
+                <Button label="/" click={addOperator} operation/>
                 <Button label="7" click={addDigit}/>
                 <Button label="8" click={addDigit}/>
                 <Button label="9" click={addDigit}/>
-                <Button label="x" click={addDigit} operation/>
+                <Button label="x" click={addOperator} operation/>
                 <Button label="4" click={addDigit}/>
                 <Button label="5" click={addDigit}/>
                 <Button label="6" click={addDigit}/>
-                <Button label="-" click={addDigit} operation/>
+                <Button label="-" click={addOperator} operation/>
                 <Button label="1" click={addDigit}/>
                 <Button label="2" click={addDigit}/>
                 <Button label="3" click={addDigit}/>
-                <Button label="+" click={addDigit} operation/>
+                <Button label="+" click={addOperator} operation/>
                 <Button label="+/-" />
                 <Button label="0" click={addDigit}/>
                 <Button label="." click={addDigit}/>
