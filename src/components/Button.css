@@ -1,5 +1,5 @@
 :root {
-    --bg-button: #161616;
+    --bg-button: #111111;
     --char-color: #f0f0f0;
 }
 
@@ -10,11 +10,13 @@
     margin: 6%;
     border: none;
     color: var(--char-color);
+    transition: background-color 0.2s ease-in-out, font-size 0.2s ease-in-out;
 }
 
 .button:active {
-    background-color: #5e5e5e;
+    background-color: #474747;
     font-size: 0.7em;
+    transition: background-color 0s ease-in-out, font-size 0s ease-in-out;
 }
 
 .button.operation {
@@ -26,7 +28,7 @@
 }
 
 .button.equal {
-    background-color: #03d100;
+    background-color: #03a300;
 }
 
 .button.equal:active {
