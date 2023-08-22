@@ -1,0 +1,11 @@
+.toolbar {
+    grid-column: span 4;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+.backspace {
+    text-align: right;
+}
