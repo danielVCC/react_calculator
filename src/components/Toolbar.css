@@ -7,5 +7,20 @@
   }
 
 .backspace {
-    text-align: right;
+    font-size: 0.5em;
+    background-color: black;
+    color: #6dd03b;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.backspace:active {
+  background-color: #323232;
+  transition: background-color 0s ease-in-out;
 }

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import './Calculator.css';
 import Button from "../components/Button";
 import Display from "../components/Display";
+import Toolbar from "../components/Toolbar";
 
 const initialState = {
     displayValue: "",
@@ -23,6 +24,14 @@ export default class Calculator extends Component {
         const displayValue = this.state.resultDisplayValue;
         const resultDisplayValue = "";
         this.setState({ displayValue, resultDisplayValue});
+    }
+
+    backSpace() {
+        const displayValue = this.state.displayValue.slice(0, -1);
+        var resultDisplayValue = ""
+        if(this.containsOperator(displayValue))
+            resultDisplayValue = this.evaluateExpression(displayValue);
+        this.setState({ displayValue, resultDisplayValue });
     }
 
     evaluateExpression(expression) {
@@ -132,10 +141,12 @@ export default class Calculator extends Component {
         const addPercentage = () => this.addPercentage();
         const clear = () => this.clear();
         const equal = () => this.equal();
+        const backSpace = () => this.backSpace();
 
         return (
             <div className="calculator">
                 <Display value={this.state.displayValue} resultValue={this.state.resultDisplayValue}/>
+                <Toolbar backSpaceClick={backSpace}/>
                 <Button label="C" click={clear} clear/>
                 <Button label="()" click={addParentheses} operation/>
                 <Button label="%" click={addPercentage} operation/>
