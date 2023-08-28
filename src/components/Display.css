@@ -7,7 +7,7 @@
 }
 
 .main {
-font-size: 1.4em;
+    font-size: 1.4em;
 
     flex: 1;
     width: 100%;
@@ -27,4 +27,8 @@ font-size: 1.4em;
     display: flex;
     justify-content: flex-end;
     align-items: center;
+}
+
+.highlight {
+    color: #6dd03b;
 }
