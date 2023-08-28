@@ -83,8 +83,8 @@ export default class Calculator extends Component {
     addParentheses() {
         var displayValue = this.state.displayValue;
         var displayOpenParentheses = this.state.displayOpenParentheses;
-        // se o ultimo caracter for um operador, ou o display esteja vazio, abre parentese sempre
-        if (this.isOperator(this.getLastCharOnDisplay) || displayValue.length === 0) {
+        // se o ultimo caracter for um operador, parentese sendo aberto, ou o display esteja vazio, abre parentese sempre
+        if (this.isOperator(this.getLastCharOnDisplay()) || displayValue.length === 0 || this.getLastCharOnDisplay() === '(') {
             displayValue += '(';
             displayOpenParentheses++;
             return this.setState({ displayValue, displayOpenParentheses });
